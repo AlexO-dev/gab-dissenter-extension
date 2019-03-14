@@ -81,19 +81,67 @@ var GDYoutube = function() {
         //Get url, height
         var url = window.location.href;
         var height = window.innerHeight;
-
+		
+		// TODO: Add to options..
+		/*
         //Send message to background to open popup window
         __BROWSER__.runtime.sendMessage({
             action: BACKGROUND_ACTION_OPEN_POPUP,
             url: url,
             height: height
-        });
+        });*/
+		
+		
+		loadYTComments();
     };
 
+    /**
+     * @description - Makes a request to Dissenter and gets the comments.
+     * @function loadYTComments
+     */
+    function loadYTComments() {
+		// Only load extension if v exists, which it won't on pages like the home page or settings
+		var youtube_url = new URL(window.location.href);
+		if (!youtube_url.searchParams.get("v")) return false;
+		var v = youtube_url.origin + "/watch?v=" +  youtube_url.searchParams.get("v")
+		var commentUrl = BASE_URI + v;
+		
+		fetch(commentUrl).then(function(response) {return response.text();})
+		.then(parseYTComments);
+    };
 
+	/**
+     * @description - Parses output from Dissenter servers.
+     * @function parseYTComments
+     */
+    function parseYTComments(data) {
+		
+		// Need fontAwesome to display the votes icons.
+		var head = document.getElementsByTagName("head")[0];
+		fontAwesome = document.createElement("link");
+		fontAwesome.rel = "stylesheet";
+		fontAwesome.crossOrigin = "anonymous";
+		fontAwesome.href = "https://use.fontawesome.com/releases/v5.7.2/css/all.css";
+		fontAwesome.integrity = "sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr";
+		head.appendChild(fontAwesome);
+		
+		// Only load extension if v exists, which it won't on pages like the home page or settings
+		var dissenterPage = strToObj(data)
+		var hydraClientJson = JSON.parse(document.evaluate("//script[contains(., 'hydra.client =')]", dissenterPage, null, XPathResult.ANY_TYPE, null ).iterateNext().innerText.slice(87, -3));
+		window.hydra = window.hydra || {};
+		window.hydra.client = new hydra.HydraClient(hydraClientJson);
+		window.hydra.client.connect();
+		window.hydra.dissent = new hydra.GabDissent();
+		window.hydra.dissent.restoreDrafts();
+		
+		var reply = dissenterPage.querySelector("#begin-composer-container");
+		var dcComments = dissenterPage.querySelector("#ext-comment-list");
+		var ytComments = document.getElementById("comments");
+		ytComments.parentNode.insertBefore(dcComments, ytComments)
+		console.log("Here")
+    };
+	
     //Global functions
-
-
     /**
      * @description - Init script on open
      * @function scope.init

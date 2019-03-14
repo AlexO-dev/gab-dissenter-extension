@@ -37,7 +37,8 @@ module.exports = manifest = {
         },
         {
             "matches": ["https://*.youtube.com/*"],
-            "js": ["content/youtube/script/script.js"]
+            "js": ["content/youtube/script/script.js"],
+			"css": ["content/youtube/youtube.css"]
         },
         {
             "matches": ["https://*.reddit.com/*"],

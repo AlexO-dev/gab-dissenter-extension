@@ -41,7 +41,6 @@ gulp.task('styles', function() {
         return new Promise((resolve, reject) => {
             gulp
                 .src([
-                    'src/styles/global.scss',
                     `src/styles/components/${fileName}.scss`,
                 ])
                 .pipe(wait(500))
@@ -66,7 +65,10 @@ gulp.task('styles', function() {
 
         promises.push(getPromise('popup', browser.path));
         if (browser.slug === 'firefox') promises.push(getPromise('sidebar', browser.path));
-        if (browser.slug !== 'safari') promises.push(getPromise('options', browser.path));
+        if (browser.slug !== 'safari') {
+			promises.push(getPromise('options', browser.path));
+			promises.push(getPromise('youtube', `${browser.path}/content`));
+		}
     };
 
     return Promise.all(promises);

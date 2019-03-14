@@ -1,6 +1,30 @@
 /*================================================
     Sidebar
 ================================================*/
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    box-sizing: border-box;
+}
+
+html, body {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.abs {
+    position: absolute;
+}
+
+.rel {
+    position: relative;
+}
+
 .sidebar {
     display: block;
     min-width: 100%;

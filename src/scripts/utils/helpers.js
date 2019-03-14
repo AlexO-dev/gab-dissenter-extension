@@ -59,3 +59,14 @@ function ready(fn) {
 function getQueryStringValue(key) {
     return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
 }
+
+/**
+ * @description - Helper to translate response from the server to a Node.
+ * @function strToObj
+ * @return {Node}
+ */
+function strToObj(data){
+	var e = document.createElement("div");
+	e.innerHTML = data;
+	return e;
+}
